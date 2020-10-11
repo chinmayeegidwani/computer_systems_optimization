@@ -211,6 +211,13 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
         }
         processed_frames += 1;
         if (processed_frames % 25 == 0) {
+            if(upCount != 0){
+                frame_buffer = processMoveUp(frame_buffer, width, height, upCount);
+                upCount = 0;
+            } else if(rightCount != 0){
+                frame_buffer = processMoveRight(frame_buffer, width, height, rightCount);
+                rightCount = 0;
+            }
             verifyFrame(frame_buffer, width, height, grading_mode);
         }
     }
