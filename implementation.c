@@ -167,15 +167,45 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
 //            printBMP(width, height, frame_buffer);
             rightCount += sensor_values[sensorValueIdx].value;
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "CW")) {
+            if(upCount != 0){
+                frame_buffer = processMoveUp(frame_buffer, width, height, upCount);
+                upCount = 0;
+            } else if(rightCount != 0){
+                frame_buffer = processMoveRight(frame_buffer, width, height, rightCount);
+                rightCount = 0;
+            }
             frame_buffer = processRotateCW(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
 //            printBMP(width, height, frame_buffer);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "CCW")) {
+            if(upCount != 0){
+                frame_buffer = processMoveUp(frame_buffer, width, height, upCount);
+                upCount = 0;
+            } else if(rightCount != 0){
+                frame_buffer = processMoveRight(frame_buffer, width, height, rightCount);
+                rightCount = 0;
+            }
             frame_buffer = processRotateCCW(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
 //            printBMP(width, height, frame_buffer);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "MX")) {
+            //mirrorX != mirrorX;
+            //upCount = -1 * upCount; // if mirrored on X axis, object moves up
+            if(upCount != 0){
+                frame_buffer = processMoveUp(frame_buffer, width, height, upCount);
+                upCount = 0;
+            } else if(rightCount != 0){
+                frame_buffer = processMoveUp(frame_buffer, width, height, rightCount);
+                rightCount = 0;
+            }
             frame_buffer = processMirrorX(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
 //            printBMP(width, height, frame_buffer);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "MY")) {
+            if(upCount != 0){
+                frame_buffer = processMoveUp(frame_buffer, width, height, upCount);
+                upCount = 0;
+            } else if(rightCount != 0){
+                frame_buffer = processMoveRight(frame_buffer, width, height, rightCount);
+                rightCount = 0;
+            }
             frame_buffer = processMirrorY(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
 //            printBMP(width, height, frame_buffer);
         }
