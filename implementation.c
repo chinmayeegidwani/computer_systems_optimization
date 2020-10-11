@@ -142,21 +142,30 @@ void print_team_info(){
 void implementation_driver(struct kv *sensor_values, int sensor_values_count, unsigned char *frame_buffer,
                            unsigned int width, unsigned int height, bool grading_mode) {
     int processed_frames = 0;
+    int upCount = 0;
+    int rightCount = 0;
+    bool mirrorX = false;
+    bool mirrorY = false;
+    //can allocate frame here later
     for (int sensorValueIdx = 0; sensorValueIdx < sensor_values_count; sensorValueIdx++) {
 //        printf("Processing sensor value #%d: %s, %d\n", sensorValueIdx, sensor_values[sensorValueIdx].key,
 //               sensor_values[sensorValueIdx].value);
         if (!strcmp(sensor_values[sensorValueIdx].key, "W")) {
-            frame_buffer = processMoveUp(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
+            //frame_buffer = processMoveUp(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
+            upCount += sensor_values[sensorValueIdx].value;
 //            printBMP(width, height, frame_buffer);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "A")) {
-            frame_buffer = processMoveLeft(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
+            //frame_buffer = processMoveLeft(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
 //            printBMP(width, height, frame_buffer);
+            rightCount -= sensor_values[sensorValueIdx].value;
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "S")) {
-            frame_buffer = processMoveDown(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
+            //frame_buffer = processMoveDown(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
 //            printBMP(width, height, frame_buffer);
+            upCount -= sensor_values[sensorValueIdx].value;
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "D")) {
-            frame_buffer = processMoveRight(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
+            //frame_buffer = processMoveRight(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
 //            printBMP(width, height, frame_buffer);
+            rightCount += sensor_values[sensorValueIdx].value;
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "CW")) {
             frame_buffer = processRotateCW(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
 //            printBMP(width, height, frame_buffer);
