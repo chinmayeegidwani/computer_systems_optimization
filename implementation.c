@@ -193,7 +193,7 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
                 frame_buffer = processMoveUp(frame_buffer, width, height, upCount);
                 upCount = 0;
             } else if(rightCount != 0){
-                frame_buffer = processMoveUp(frame_buffer, width, height, rightCount);
+                frame_buffer = processMoveRight(frame_buffer, width, height, rightCount);
                 rightCount = 0;
             }
             frame_buffer = processMirrorX(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
