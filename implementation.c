@@ -56,6 +56,34 @@ void upDownLeftRight(int upCount, int rightCount, int num_colored_pixels, int *r
     }
 }
 
+void rotation(int CWCount, unsigned char *rows, unsigned char *cols, int num_colored_pixels, int width){
+    int temp;
+    CWCount = CWCount % 4;
+    if(CWCount<0){
+        CWCount = -3 * CWCount; //ie -90 rotation == +180 rotation
+    }
+    if(CWCount==0){
+        return;
+    } else if (CWCount ==1){
+        for(int i=0; i < num_colored_pixels; i++){
+            temp = rows[i];
+            rows[i] = cols[i]; // old(cols) -> new(rows)
+            cols[i] = width - temp - 1;
+        }
+    } else if (CWCount ==2){
+        for(int i=0; i < num_colored_pixels; i++){
+            rows[i] = width - rows[i] -1; //first row becomes last row
+            cols[i] = width - col[i] -1;
+        }
+    } else if (CWCount ==3){
+        for(int i=0; i < num_colored_pixels; i++){
+            temp = cols[i];
+            rows[i] = width - temp -1; // opposite of 1
+            cols[i] = rows[i];
+        }
+    }
+}
+
 /***********************************************************************************************************************
  * @param buffer_frame - pointer pointing to a buffer storing the imported 24-bit bitmap image
  * @param width - width of the imported 24-bit bitmap image
@@ -103,6 +131,9 @@ unsigned char *processMoveUp(unsigned char *buffer_frame, unsigned width, unsign
 
     // return a pointer to the updated image buffer
     return buffer_frame;}
+
+
+
 
 /***********************************************************************************************************************
  * @param buffer_frame - pointer pointing to a buffer storing the imported 24-bit bitmap image
@@ -267,7 +298,7 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
                 upCount=0;
                 rightCount=0; //reset counters
             }
-            frame_buffer = processRotateCW(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
+            rotation(sensor_values[sensorValueIdx].value, rows, cols, num_colored_pixels, width);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "CCW")) {
 
             if(upCount!=0 || rightCount != 0){
@@ -277,7 +308,7 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
                 upCount=0;
                 rightCount=0; //reset counters
             }
-            frame_buffer = processRotateCCW(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
+            rotation(-1 * sensor_values[sensorValueIdx].value, rows, cols, num_colored_pixels, width);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "MX")) {
             if(upCount!=0 || rightCount != 0){
                 printf("upCount: %d \n", upCount);
