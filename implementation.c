@@ -58,11 +58,11 @@ void upDownLeftRight(int upCount, int rightCount, int num_colored_pixels, int *r
 
 void rotation(int CWCount, int *rows, int *cols, int num_colored_pixels, int width){
     int temp;
-
+    CWCount = CWCount % 4;
     if(CWCount<0){
         CWCount = -3 * CWCount; //ie -90 rotation == +180 rotation
     }
-    CWCount = CWCount % 4;
+
     if(CWCount==0){
         return;
     } else if (CWCount ==1){
@@ -79,8 +79,8 @@ void rotation(int CWCount, int *rows, int *cols, int num_colored_pixels, int wid
     } else if (CWCount ==3){
         for(int i=0; i < num_colored_pixels; i++){
             temp = cols[i];
-            rows[i] = width - temp -1; // opposite of 1
             cols[i] = rows[i];
+            rows[i] = width - temp -1; // opposite of 1
         }
     }
 }
