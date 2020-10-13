@@ -248,31 +248,15 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
     for (int sensorValueIdx = 0; sensorValueIdx < sensor_values_count; sensorValueIdx++) {
 //        printf("Processing sensor value #%d: %s, %d\n", sensorValueIdx, sensor_values[sensorValueIdx].key,
 //               sensor_values[sensorValueIdx].value);
-        if (!strcmp(sensor_values[sensorValueIdx].key, "W")) {
-            //frame_buffer = processMoveUp(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
+        if (!strcmp(sensor_values[sensorValueIdx].key, "W")) { //right
             upCount += sensor_values[sensorValueIdx].value;
-//            printBMP(width, height, frame_buffer);
-        } else if (!strcmp(sensor_values[sensorValueIdx].key, "A")) {
-            //frame_buffer = processMoveLeft(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
-//            printBMP(width, height, frame_buffer);
+        } else if (!strcmp(sensor_values[sensorValueIdx].key, "A")) { //left
             rightCount -= sensor_values[sensorValueIdx].value;
-        } else if (!strcmp(sensor_values[sensorValueIdx].key, "S")) {
-            //frame_buffer = processMoveDown(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
-//            printBMP(width, height, frame_buffer);
+        } else if (!strcmp(sensor_values[sensorValueIdx].key, "S")) { //down
             upCount -= sensor_values[sensorValueIdx].value;
-        } else if (!strcmp(sensor_values[sensorValueIdx].key, "D")) {
-            //frame_buffer = processMoveRight(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
-//            printBMP(width, height, frame_buffer);
+        } else if (!strcmp(sensor_values[sensorValueIdx].key, "D")) {//up
             rightCount += sensor_values[sensorValueIdx].value;
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "CW")) {
-            /*if(upCount != 0){
-                frame_buffer = processMoveUp(frame_buffer, width, height, upCount);
-                upCount = 0;
-            }
-            if(rightCount != 0){
-                frame_buffer = processMoveRight(frame_buffer, width, height, rightCount);
-                rightCount = 0;
-            } */
             if(upCount!=0 || rightCount != 0){
                 printf("upCount: %d \n", upCount);
                 printf("rightCount: %d \n", rightCount);
@@ -281,7 +265,6 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
                 rightCount=0; //reset counters
             }
             frame_buffer = processRotateCW(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
-//            printBMP(width, height, frame_buffer);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "CCW")) {
 
             if(upCount!=0 || rightCount != 0){
@@ -292,10 +275,7 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
                 rightCount=0; //reset counters
             }
             frame_buffer = processRotateCCW(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
-//            printBMP(width, height, frame_buffer);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "MX")) {
-            //mirrorX != mirrorX;
-            //upCount = -1 * upCount; // if mirrored on X axis, object moves up
             printf("upCount: %d \n", upCount);
             printf("rightCount: %d \n", rightCount);
             if(upCount!=0 || rightCount != 0){
@@ -304,7 +284,6 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
                 rightCount=0; //reset counters
             }
             frame_buffer = processMirrorX(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
-//            printBMP(width, height, frame_buffer);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "MY")) {
             if(upCount!=0 || rightCount != 0){
                 printf("upCount: %d \n", upCount);
@@ -314,13 +293,12 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
                 rightCount=0; //reset counters
             }
             frame_buffer = processMirrorY(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
-//            printBMP(width, height, frame_buffer);
         }
         processed_frames += 1;
         if (processed_frames % 25 == 0) {
             if(upCount!=0 || rightCount != 0){
                 printf("upCount: %d \n", upCount);
-                printf("rightCount: %d \n", rightCount);
+                printf("rightCount: %d ", rightCount);
                 upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
                 upCount=0;
                 rightCount=0; //reset counters
