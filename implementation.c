@@ -276,9 +276,9 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
             }
             frame_buffer = processRotateCCW(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "MX")) {
-            printf("upCount: %d \n", upCount);
-            printf("rightCount: %d \n", rightCount);
             if(upCount!=0 || rightCount != 0){
+                printf("upCount: %d \n", upCount);
+                printf("rightCount: %d \n", rightCount);
                 upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
                 upCount=0;
                 rightCount=0; //reset counters
