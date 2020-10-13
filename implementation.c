@@ -23,16 +23,18 @@ int separateRGB(unsigned char * frame_buffer, int *rows, int *cols, unsigned cha
             count++;
         }
     }
-    printf("in separate RGB");
+    //printf("in separate RGB");
     return count;
 }
 
 void whiteImage(unsigned char * frame_buffer, int num_colored_pixels, int row_size,
                 int * rows, int * cols){
-    for(int i=0; i<num_colored_pixels*3; i++){
+    for(int i=0; i<num_colored_pixels; i++){
         frame_buffer[rows[i]*row_size + cols[i] *3] = 255;
+        frame_buffer[rows[i]*row_size + cols[i] *3 +1] = 255;
+        frame_buffer[rows[i]*row_size + cols[i] *3 +2] = 255;
     }
-    printf("in whiteImage");
+    //printf("in whiteImage");
 }
 
 void fillFrameBuffer(unsigned char *frame_buffer, int num_colored_pixels, int row_size,
@@ -43,12 +45,12 @@ void fillFrameBuffer(unsigned char *frame_buffer, int num_colored_pixels, int ro
         frame_buffer[rows[i]*row_size + cols[i] *3 + 1] = green[i];
         frame_buffer[rows[i]*row_size + cols[i] *3 + 2] = blue[i];
     }
-    printf("in fillFrameBuffer");
+    //printf("in fillFrameBuffer");
 }
 
 void upDownLeftRight(int upCount, int rightCount, int num_colored_pixels, int *rows, int *cols){
     for(int i=0; i<num_colored_pixels; i++){
-        rows[i] += upCount;
+        rows[i] -= upCount;
         cols[i] += rightCount;
     }
 }
@@ -272,6 +274,8 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
                 rightCount = 0;
             } */
             if(upCount!=0 || rightCount != 0){
+                printf("upCount: %d ", upCount);
+                printf("rightCount: %d ", rightCount);
                 upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
                 upCount=0;
                 rightCount=0; //reset counters
@@ -279,7 +283,10 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
             frame_buffer = processRotateCW(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
 //            printBMP(width, height, frame_buffer);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "CCW")) {
+
             if(upCount!=0 || rightCount != 0){
+                printf("upCount: %d ", upCount);
+                printf("rightCount: %d ", rightCount);
                 upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
                 upCount=0;
                 rightCount=0; //reset counters
@@ -289,6 +296,8 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "MX")) {
             //mirrorX != mirrorX;
             //upCount = -1 * upCount; // if mirrored on X axis, object moves up
+            printf("upCount: %d ", upCount);
+            printf("rightCount: %d ", rightCount);
             if(upCount!=0 || rightCount != 0){
                 upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
                 upCount=0;
@@ -298,6 +307,8 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
 //            printBMP(width, height, frame_buffer);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "MY")) {
             if(upCount!=0 || rightCount != 0){
+                printf("upCount: %d ", upCount);
+                printf("rightCount: %d ", rightCount);
                 upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
                 upCount=0;
                 rightCount=0; //reset counters
@@ -308,6 +319,8 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
         processed_frames += 1;
         if (processed_frames % 25 == 0) {
             if(upCount!=0 || rightCount != 0){
+                printf("upCount: %d ", upCount);
+                printf("rightCount: %d ", rightCount);
                 upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
                 upCount=0;
                 rightCount=0; //reset counters
@@ -318,5 +331,10 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
             whiteImage(frame_buffer, num_colored_pixels, row_size, rows, cols);
         }
     }
+    free(rows);
+    free(cols);
+    free(red);
+    free(green);
+    free(blue);
     return;
 }
