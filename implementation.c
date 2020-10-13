@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+# include <stdlib.h>
 #include "utilities.h"  // DO NOT REMOVE this line
 #include "implementation_reference.h"   // DO NOT REMOVE this line
 
@@ -22,7 +23,6 @@ int separateRGB(unsigned char * frame_buffer, int *rows, int *cols, unsigned cha
             count++;
         }
     }
-    return;
 }
 
 /***********************************************************************************************************************
@@ -202,7 +202,6 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
     int rightCount = 0;
     bool mirrorX = false;
     bool mirrorY = false;
-    int processed_frames = 0;
     int image_size = width * height;
     int row_size = 3*width;
     int image_size_bytes = image_size * 3;
