@@ -93,7 +93,9 @@ void reflection(bool mirrorX, bool mirrorY, int *rows, int *cols, int num_colore
     }
 
     if(mirrorY){
+        for(int i=0; i<num_colored_pixels; i++){
             cols[i] = width - cols[i] -1; //first col becomes last col
+        }
     }
 }
 
