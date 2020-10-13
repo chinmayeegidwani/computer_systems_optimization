@@ -23,6 +23,15 @@ int separateRGB(unsigned char * frame_buffer, int *rows, int *cols, unsigned cha
             count++;
         }
     }
+    return count;
+}
+
+void whiteImage(unsigned char * frame_buffer, int num_colored_pixels, int row_size,
+                int * rows, int * cols){
+    for(int i=0; i<num_colored_pixels*3; i++){
+        frame_buffer[rows[i]*row_size + cols[i] *3] = 255;
+    }
+
 }
 
 /***********************************************************************************************************************
@@ -210,8 +219,8 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
     unsigned char *blue = (unsigned char *) malloc(image_size);
     int * rows = (int *) malloc(image_size * sizeof(int));
     int * cols = (int *) malloc(image_size * sizeof(int));
-    separateRGB(frame_buffer, rows, cols, red, green, blue, image_size, row_size);
-    
+    int num_colored_pixels = separateRGB(frame_buffer, rows, cols, red, green, blue, image_size, row_size);
+    whiteImage(frame_buffer, num_colored_pixels, row_size, rows, cols);
     
     //can allocate frame here later
     for (int sensorValueIdx = 0; sensorValueIdx < sensor_values_count; sensorValueIdx++) {
