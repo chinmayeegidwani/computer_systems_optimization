@@ -85,6 +85,18 @@ void rotation(int CWCount, int *rows, int *cols, int num_colored_pixels, int wid
     }
 }
 
+void reflection(bool mirrorX, bool mirrorY, int *rows, int *cols, int num_colored_pixels, int width){
+    if(mirrorX){
+        for(int i=0; i<num_colored_pixels; i++){
+            rows[i] = width - rows[i] - 1; // first row becomes last row
+        }
+    }
+
+    if(mirrorY){
+            cols[i] = width - cols[i] -1; //first col becomes last col
+    }
+}
+
 /***********************************************************************************************************************
  * @param buffer_frame - pointer pointing to a buffer storing the imported 24-bit bitmap image
  * @param width - width of the imported 24-bit bitmap image
@@ -318,7 +330,8 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
                 upCount=0;
                 rightCount=0; //reset counters
             }
-            frame_buffer = processMirrorX(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
+            reflection(true, false, rows, cols, num_colored_pixels, width);
+            //frame_buffer = processMirrorX(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "MY")) {
             if(upCount!=0 || rightCount != 0){
                 printf("upCount: %d \n", upCount);
@@ -327,7 +340,8 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
                 upCount=0;
                 rightCount=0; //reset counters
             }
-            frame_buffer = processMirrorY(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
+            reflection(false, true, rows, cols, num_colored_pixels, width);
+            //frame_buffer = processMirrorY(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
         }
         processed_frames += 1;
         if (processed_frames % 25 == 0) {
