@@ -13,8 +13,13 @@ int separateRGB(unsigned char * frame_buffer, int *rows, int *cols, unsigned cha
         g = frame_buffer[i+1];
         b  = frame_buffer[i+2];
         if(r != 255 || g != 255 || b != 255){
+            /* If not blank, record colored pixels */
+            red[count] = r;
+            green[count] = g;
+            blue[count] = b;
             rows[count] = i/row_size;
             cols[count] = (i%row_size) / 3;
+            count++;
         }
     }
     return;
