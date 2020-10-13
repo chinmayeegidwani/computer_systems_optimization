@@ -23,6 +23,7 @@ int separateRGB(unsigned char * frame_buffer, int *rows, int *cols, unsigned cha
             count++;
         }
     }
+    printf("in separate RGB");
     return count;
 }
 
@@ -31,7 +32,18 @@ void whiteImage(unsigned char * frame_buffer, int num_colored_pixels, int row_si
     for(int i=0; i<num_colored_pixels*3; i++){
         frame_buffer[rows[i]*row_size + cols[i] *3] = 255;
     }
+    printf("in whiteImage");
+}
 
+void fillFrameBuffer(unsigned char *frame_buffer, int num_colored_pixels, int row_size,
+                     int *rows, int *cols, unsigned char *red, unsigned char *green, 
+                     unsigned char * blue){
+    for(int i=0; i<num_colored_pixels; i++){
+        frame_buffer[rows[i]*row_size + cols[i] *3] = red[i];
+        frame_buffer[rows[i]*row_size + cols[i] *3 + 1] = red[i];
+        frame_buffer[rows[i]*row_size + cols[i] *3 + 2] = red[i];
+    }
+    printf("in fillFrameBuffer")
 }
 
 /***********************************************************************************************************************
@@ -221,7 +233,8 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
     int * cols = (int *) malloc(image_size * sizeof(int));
     int num_colored_pixels = separateRGB(frame_buffer, rows, cols, red, green, blue, image_size, row_size);
     whiteImage(frame_buffer, num_colored_pixels, row_size, rows, cols);
-    
+    fillFrameBuffer(frame_buffer, num_colored_pixels, row_size, rows, cols,
+                    red, green, blue);
     //can allocate frame here later
     for (int sensorValueIdx = 0; sensorValueIdx < sensor_values_count; sensorValueIdx++) {
 //        printf("Processing sensor value #%d: %s, %d\n", sensorValueIdx, sensor_values[sensorValueIdx].key,
