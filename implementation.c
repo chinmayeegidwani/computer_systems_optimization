@@ -43,7 +43,7 @@ void fillFrameBuffer(unsigned char *frame_buffer, int num_colored_pixels, int ro
         frame_buffer[rows[i]*row_size + cols[i] *3 + 1] = red[i];
         frame_buffer[rows[i]*row_size + cols[i] *3 + 2] = red[i];
     }
-    printf("in fillFrameBuffer")
+    printf("in fillFrameBuffer");
 }
 
 /***********************************************************************************************************************
