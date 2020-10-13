@@ -56,7 +56,7 @@ void upDownLeftRight(int upCount, int rightCount, int num_colored_pixels, int *r
     }
 }
 
-void rotation(int CWCount, unsigned char *rows, unsigned char *cols, int num_colored_pixels, int width){
+void rotation(int CWCount, int *rows, int *cols, int num_colored_pixels, int width){
     int temp;
     CWCount = CWCount % 4;
     if(CWCount<0){
@@ -73,7 +73,7 @@ void rotation(int CWCount, unsigned char *rows, unsigned char *cols, int num_col
     } else if (CWCount ==2){
         for(int i=0; i < num_colored_pixels; i++){
             rows[i] = width - rows[i] -1; //first row becomes last row
-            cols[i] = width - col[i] -1;
+            cols[i] = width - cols[i] -1;
         }
     } else if (CWCount ==3){
         for(int i=0; i < num_colored_pixels; i++){
