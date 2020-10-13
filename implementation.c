@@ -40,10 +40,17 @@ void fillFrameBuffer(unsigned char *frame_buffer, int num_colored_pixels, int ro
                      unsigned char * blue){
     for(int i=0; i<num_colored_pixels; i++){
         frame_buffer[rows[i]*row_size + cols[i] *3] = red[i];
-        frame_buffer[rows[i]*row_size + cols[i] *3 + 1] = red[i];
-        frame_buffer[rows[i]*row_size + cols[i] *3 + 2] = red[i];
+        frame_buffer[rows[i]*row_size + cols[i] *3 + 1] = green[i];
+        frame_buffer[rows[i]*row_size + cols[i] *3 + 2] = blue[i];
     }
     printf("in fillFrameBuffer");
+}
+
+void upDownLeftRight(int upCount, int rightCount, int num_colored_pixels, int *rows, int *cols){
+    for(int i=0; i<num_colored_pixels; i++){
+        rows[i] += upCount;
+        cols[i] += rightCount;
+    }
 }
 
 /***********************************************************************************************************************
@@ -232,9 +239,9 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
     int * rows = (int *) malloc(image_size * sizeof(int));
     int * cols = (int *) malloc(image_size * sizeof(int));
     int num_colored_pixels = separateRGB(frame_buffer, rows, cols, red, green, blue, image_size, row_size);
-    whiteImage(frame_buffer, num_colored_pixels, row_size, rows, cols);
-    fillFrameBuffer(frame_buffer, num_colored_pixels, row_size, rows, cols,
-                    red, green, blue);
+    //whiteImage(frame_buffer, num_colored_pixels, row_size, rows, cols);
+    //fillFrameBuffer(frame_buffer, num_colored_pixels, row_size, rows, cols,
+    //                red, green, blue);
     //can allocate frame here later
     for (int sensorValueIdx = 0; sensorValueIdx < sensor_values_count; sensorValueIdx++) {
 //        printf("Processing sensor value #%d: %s, %d\n", sensorValueIdx, sensor_values[sensorValueIdx].key,
@@ -256,62 +263,54 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
 //            printBMP(width, height, frame_buffer);
             rightCount += sensor_values[sensorValueIdx].value;
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "CW")) {
-            if(upCount != 0){
+            /*if(upCount != 0){
                 frame_buffer = processMoveUp(frame_buffer, width, height, upCount);
                 upCount = 0;
             }
             if(rightCount != 0){
                 frame_buffer = processMoveRight(frame_buffer, width, height, rightCount);
                 rightCount = 0;
+            } */
+            if(upCount!=0 || rightCount != 0){
+                upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
+                upCount=0;
+                rightCount=0; //reset counters
             }
-            
             frame_buffer = processRotateCW(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
 //            printBMP(width, height, frame_buffer);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "CCW")) {
-            if(upCount != 0){
-                frame_buffer = processMoveUp(frame_buffer, width, height, upCount);
-                upCount = 0;
-            }
-            if(rightCount != 0){
-                frame_buffer = processMoveRight(frame_buffer, width, height, rightCount);
-                rightCount = 0;
+            if(upCount!=0 || rightCount != 0){
+                upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
+                upCount=0;
+                rightCount=0; //reset counters
             }
             frame_buffer = processRotateCCW(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
 //            printBMP(width, height, frame_buffer);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "MX")) {
             //mirrorX != mirrorX;
             //upCount = -1 * upCount; // if mirrored on X axis, object moves up
-            if(upCount != 0){
-                frame_buffer = processMoveUp(frame_buffer, width, height, upCount);
-                upCount = 0;
-            }
-            if(rightCount != 0){
-                frame_buffer = processMoveRight(frame_buffer, width, height, rightCount);
-                rightCount = 0;
+            if(upCount!=0 || rightCount != 0){
+                upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
+                upCount=0;
+                rightCount=0; //reset counters
             }
             frame_buffer = processMirrorX(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
 //            printBMP(width, height, frame_buffer);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "MY")) {
-            if(upCount != 0){
-                frame_buffer = processMoveUp(frame_buffer, width, height, upCount);
-                upCount = 0;
-            }
-            if(rightCount != 0){
-                frame_buffer = processMoveRight(frame_buffer, width, height, rightCount);
-                rightCount = 0;
+            if(upCount!=0 || rightCount != 0){
+                upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
+                upCount=0;
+                rightCount=0; //reset counters
             }
             frame_buffer = processMirrorY(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
 //            printBMP(width, height, frame_buffer);
         }
         processed_frames += 1;
         if (processed_frames % 25 == 0) {
-            if(upCount != 0){
-                frame_buffer = processMoveUp(frame_buffer, width, height, upCount);
-                upCount = 0;
-            }
-            if(rightCount != 0){
-                frame_buffer = processMoveRight(frame_buffer, width, height, rightCount);
-                rightCount = 0;
+            if(upCount!=0 || rightCount != 0){
+                upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
+                upCount=0;
+                rightCount=0; //reset counters
             }
             verifyFrame(frame_buffer, width, height, grading_mode);
         }
