@@ -239,7 +239,7 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
     int * rows = (int *) malloc(image_size * sizeof(int));
     int * cols = (int *) malloc(image_size * sizeof(int));
     int num_colored_pixels = separateRGB(frame_buffer, rows, cols, red, green, blue, image_size, row_size);
-    //whiteImage(frame_buffer, num_colored_pixels, row_size, rows, cols);
+    whiteImage(frame_buffer, num_colored_pixels, row_size, rows, cols);
     //fillFrameBuffer(frame_buffer, num_colored_pixels, row_size, rows, cols,
     //                red, green, blue);
     //can allocate frame here later
@@ -312,7 +312,10 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
                 upCount=0;
                 rightCount=0; //reset counters
             }
+            fillFrameBuffer(frame_buffer, num_colored_pixels, row_size, rows, cols,
+                       red, green, blue);
             verifyFrame(frame_buffer, width, height, grading_mode);
+            whiteImage(frame_buffer, num_colored_pixels, row_size, rows, cols);
         }
     }
     return;
