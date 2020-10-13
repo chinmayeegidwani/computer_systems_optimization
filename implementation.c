@@ -4,6 +4,22 @@
 #include "utilities.h"  // DO NOT REMOVE this line
 #include "implementation_reference.h"   // DO NOT REMOVE this line
 
+int separateRGB(unsigned char * frame_buffer, int *rows, int *cols, unsigned char *red, unsigned char *green,
+                unsigned char *blue, int image_size, int row_size){
+    unsigned char r, g, b;
+    int count = 0;
+    for(int i = 0; i < image_size; i+=3){
+        r = frame_buffer[i];
+        g = frame_buffer[i+1];
+        b  = frame_buffer[i+2];
+        if(r != 255 || g != 255 || b != 255){
+            rows[count] = i/row_size;
+            cols[count] = (i%row_size) / 3;
+        }
+    }
+    return;
+}
+
 /***********************************************************************************************************************
  * @param buffer_frame - pointer pointing to a buffer storing the imported 24-bit bitmap image
  * @param width - width of the imported 24-bit bitmap image
@@ -14,8 +30,43 @@
  * Note2: You can assume the object will never be moved off the screen
  **********************************************************************************************************************/
 unsigned char *processMoveUp(unsigned char *buffer_frame, unsigned width, unsigned height, int offset) {
-    return processMoveUpReference(buffer_frame, width, height, offset);
-}
+    // handle negative offsets
+    if (offset < 0){
+        return processMoveDownReference(buffer_frame, width, height, offset * -1);
+    }
+
+    // allocate memory for temporary image buffer
+    unsigned char *rendered_frame = allocateFrame(width, height);
+
+    // store shifted pixels to temporary buffer
+    for (int row = 0; row < (height - offset); row++) {
+        for (int column = 0; column < width; column++) {
+            int position_rendered_frame = row * width * 3 + column * 3;
+            int position_buffer_frame = (row + offset) * width * 3 + column * 3;
+            rendered_frame[position_rendered_frame] = buffer_frame[position_buffer_frame];
+            rendered_frame[position_rendered_frame + 1] = buffer_frame[position_buffer_frame + 1];
+            rendered_frame[position_rendered_frame + 2] = buffer_frame[position_buffer_frame + 2];
+        }
+    }
+
+    // fill left over pixels with white pixels
+    for (int row = (height - offset); row < height; row++) {
+        for (int column = 0; column < width; column++) {
+            int position_rendered_frame = row * width * 3 + column * 3;
+            rendered_frame[position_rendered_frame] = 255;
+            rendered_frame[position_rendered_frame + 1] = 255;
+            rendered_frame[position_rendered_frame + 2] = 255;
+        }
+    }
+
+    // copy the temporary buffer back to original frame buffer
+    buffer_frame = copyFrame(rendered_frame, buffer_frame, width, height);
+
+    // free temporary image buffer
+    deallocateFrame(rendered_frame);
+
+    // return a pointer to the updated image buffer
+    return buffer_frame;}
 
 /***********************************************************************************************************************
  * @param buffer_frame - pointer pointing to a buffer storing the imported 24-bit bitmap image
@@ -146,6 +197,18 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
     int rightCount = 0;
     bool mirrorX = false;
     bool mirrorY = false;
+    int processed_frames = 0;
+    int image_size = width * height;
+    int row_size = 3*width;
+    int image_size_bytes = image_size * 3;
+    unsigned char *red = (unsigned char *) malloc(image_size);
+    unsigned char *green = (unsigned char *) malloc(image_size);
+    unsigned char *blue = (unsigned char *) malloc(image_size);
+    int * rows = (int *) malloc(image_size * sizeof(int));
+    int * cols = (int *) malloc(image_size * sizeof(int));
+    separateRGB(frame_buffer, rows, cols, red, green, blue, image_size, row_size);
+    
+    
     //can allocate frame here later
     for (int sensorValueIdx = 0; sensorValueIdx < sensor_values_count; sensorValueIdx++) {
 //        printf("Processing sensor value #%d: %s, %d\n", sensorValueIdx, sensor_values[sensorValueIdx].key,
