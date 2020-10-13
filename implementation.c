@@ -293,10 +293,8 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
     //                red, green, blue);
     //can allocate frame here later
     for (int sensorValueIdx = 0; sensorValueIdx < sensor_values_count; sensorValueIdx++) {
-        printf("Processing sensor value #%d: %s, %d\n", sensorValueIdx, sensor_values[sensorValueIdx].key,
-               sensor_values[sensorValueIdx].value);
-        printf("upCount: %d \n", upCount);
-        printf("rightCount: %d \n", rightCount);
+        //printf("Processing sensor value #%d: %s, %d\n", sensorValueIdx, sensor_values[sensorValueIdx].key,
+        //       sensor_values[sensorValueIdx].value);
         if (!strcmp(sensor_values[sensorValueIdx].key, "W")) { //up
             upCount += sensor_values[sensorValueIdx].value;
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "A")) { //left
@@ -307,8 +305,6 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
             rightCount += sensor_values[sensorValueIdx].value;
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "CW")) {
             if(upCount!=0 || rightCount != 0){
-                printf("upCount: %d \n", upCount);
-                printf("rightCount: %d \n", rightCount);
                 upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
                 upCount=0;
                 rightCount=0; //reset counters
@@ -317,8 +313,6 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "CCW")) {
 
             if(upCount!=0 || rightCount != 0){
-                printf("upCount: %d \n", upCount);
-                printf("rightCount: %d \n", rightCount);
                 upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
                 upCount=0;
                 rightCount=0; //reset counters
@@ -326,8 +320,6 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
             rotation(-1 * sensor_values[sensorValueIdx].value, rows, cols, num_colored_pixels, width);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "MX")) {
             if(upCount!=0 || rightCount != 0){
-                printf("upCount: %d \n", upCount);
-                printf("rightCount: %d \n", rightCount);
                 upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
                 upCount=0;
                 rightCount=0; //reset counters
@@ -336,8 +328,6 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
             //frame_buffer = processMirrorX(frame_buffer, width, height, sensor_values[sensorValueIdx].value);
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "MY")) {
             if(upCount!=0 || rightCount != 0){
-                printf("upCount: %d \n", upCount);
-                printf("rightCount: %d \n", rightCount);
                 upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
                 upCount=0;
                 rightCount=0; //reset counters
@@ -348,8 +338,6 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
         processed_frames += 1;
         if (processed_frames % 25 == 0) {
             if(upCount!=0 || rightCount != 0){
-                printf("upCount: %d \n", upCount);
-                printf("rightCount: %d ", rightCount);
                 upDownLeftRight(upCount, rightCount, num_colored_pixels, rows, cols);
                 upCount=0;
                 rightCount=0; //reset counters
