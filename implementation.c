@@ -246,9 +246,11 @@ void implementation_driver(struct kv *sensor_values, int sensor_values_count, un
     //                red, green, blue);
     //can allocate frame here later
     for (int sensorValueIdx = 0; sensorValueIdx < sensor_values_count; sensorValueIdx++) {
-//        printf("Processing sensor value #%d: %s, %d\n", sensorValueIdx, sensor_values[sensorValueIdx].key,
-//               sensor_values[sensorValueIdx].value);
-        if (!strcmp(sensor_values[sensorValueIdx].key, "W")) { //right
+        printf("Processing sensor value #%d: %s, %d\n", sensorValueIdx, sensor_values[sensorValueIdx].key,
+               sensor_values[sensorValueIdx].value);
+        printf("upCount: %d \n", upCount);
+        printf("rightCount: %d \n", rightCount);
+        if (!strcmp(sensor_values[sensorValueIdx].key, "W")) { //up
             upCount += sensor_values[sensorValueIdx].value;
         } else if (!strcmp(sensor_values[sensorValueIdx].key, "A")) { //left
             rightCount -= sensor_values[sensorValueIdx].value;
